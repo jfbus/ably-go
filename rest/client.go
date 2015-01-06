@@ -13,9 +13,9 @@ import (
 	"sync"
 	"time"
 
-	"bitbucket.org/ably/ably-go"
+	"github.com/ably/ably-go"
 
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/ably/ably-go/Godeps/_workspace/src/github.com/flynn/flynn/pkg/random"
 )
 
 func NewClient(params ably.Params) *Client {

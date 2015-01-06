@@ -1,0 +1,27 @@
+{
+	"ImportPath": "github.com/ably/ably-go",
+	"GoVersion": "go1.4",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go.net/websocket",
+			"Comment": "null-144",
+			"Rev": "ad01a6fcc8a19d3a4478c836895ffe883bd2ceab"
+		},
+		{
+			"ImportPath": "github.com/flynn/flynn/pkg/random",
+			"Comment": "v20150105.0-14-gf6a0249",
+			"Rev": "f6a0249d1f615bab38b635a07e7edd940960483a"
+		},
+		{
+			"ImportPath": "github.com/wadey/cryptorand",
+			"Rev": "f71da62b90e6a6df720e69d4607dcfd10443c75a"
+		},
+		{
+			"ImportPath": "gopkg.in/check.v1",
+			"Rev": "64131543e7896d5bcc6bd5a76287eb75ea96c673"
+		}
+	]
+}

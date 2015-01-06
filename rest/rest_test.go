@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/ably/ably-go"
+	"github.com/ably/ably-go"
 
-	. "gopkg.in/check.v1"
+	. "github.com/ably/ably-go/Godeps/_workspace/src/gopkg.in/check.v1"
 )
 
 type testAppNamespace struct {
