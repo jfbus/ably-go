@@ -25,7 +25,7 @@ var _ = Describe("PresenceMessage", func() {
 	})
 
 	It("supports encoding", func() {
-		err := presenceMessage.EncodeData("json/utf-8", nil)
+		err := presenceMessage.EncodeData("json/utf-8", "")
 		Expect(err).NotTo(HaveOccurred())
 		Expect(presenceMessage.Data).To(Equal("hello"))
 	})

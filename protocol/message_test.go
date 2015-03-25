@@ -11,14 +11,12 @@ import (
 
 var _ = Describe("Message", func() {
 	var (
-		message      *protocol.Message
-		aes128Config map[string]string
+		message   *protocol.Message
+		aes128Key string
 	)
 
 	BeforeEach(func() {
-		aes128Config = map[string]string{
-			"key": "\xb3\x25\x06\x00\x5c\x9d\x00\x27\x81\x7d\xdf\x81\xf3\x7f\xaa\xa7",
-		}
+		aes128Key = "\xb3\x25\x06\x00\x5c\x9d\x00\x27\x81\x7d\xdf\x81\xf3\x7f\xaa\xa7"
 	})
 
 	Describe("DecodeData", func() {
@@ -28,13 +26,13 @@ var _ = Describe("Message", func() {
 			})
 
 			It("returns the same string", func() {
-				err := message.DecodeData(aes128Config)
+				err := message.DecodeData(aes128Key)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(message.Data).To(Equal(`{ "string": "utf-8™" }`))
 			})
 
 			It("can decode data without the aes config", func() {
-				err := message.DecodeData(nil)
+				err := message.DecodeData("")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(message.Data).To(Equal(`{ "string": "utf-8™" }`))
 			})
@@ -46,13 +44,13 @@ var _ = Describe("Message", func() {
 			})
 
 			It("decodes it into a byte array", func() {
-				err := message.DecodeData(aes128Config)
+				err := message.DecodeData(aes128Key)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(message.Data).To(Equal("utf-8™\n"))
 			})
 
 			It("can decode data without the aes config", func() {
-				err := message.DecodeData(nil)
+				err := message.DecodeData("")
 				Expect(err).NotTo(HaveOccurred())
 				Expect(message.Data).To(Equal("utf-8™\n"))
 			})
@@ -67,13 +65,13 @@ var _ = Describe("Message", func() {
 			})
 
 			It("decodes it into a byte array", func() {
-				err := message.DecodeData(aes128Config)
+				err := message.DecodeData(aes128Key)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(message.Data).To(Equal(`{"string":"utf-8™"}`))
 			})
 
 			It("fails to decode data without an aes config", func() {
-				err := message.DecodeData(nil)
+				err := message.DecodeData("")
 				Expect(err).To(HaveOccurred())
 			})
 		})
@@ -87,7 +85,7 @@ var _ = Describe("Message", func() {
 				message = &protocol.Message{Data: `{ "string": "utf-8™" }`}
 				encodeInto = "json/utf-8"
 
-				err := message.EncodeData(encodeInto, nil)
+				err := message.EncodeData(encodeInto, "")
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -112,7 +110,7 @@ var _ = Describe("Message", func() {
 				base64Str = base64.StdEncoding.EncodeToString([]byte(str))
 
 				message = &protocol.Message{Data: str}
-				err := message.EncodeData(encodeInto, nil)
+				err := message.EncodeData(encodeInto, "")
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -133,7 +131,7 @@ var _ = Describe("Message", func() {
 				encodeInto = "json/utf-8/cipher+aes-128-cbc/base64"
 
 				message = &protocol.Message{Data: str}
-				err := message.EncodeData(encodeInto, aes128Config)
+				err := message.EncodeData(encodeInto, aes128Key)
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -142,7 +140,7 @@ var _ = Describe("Message", func() {
 			})
 
 			It("is decode-able through the DecodeData method", func() {
-				err := message.DecodeData(aes128Config)
+				err := message.DecodeData(aes128Key)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(message.Data).To(Equal(str))
 			})

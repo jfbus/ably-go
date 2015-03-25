@@ -27,9 +27,9 @@ const (
 // For example, if Encodind is currently set to "json/base64" it will first try to decode data
 // using base64 decoding and then json. In this example JSON is not a real type used in the Go
 // library so the string is left untouched.
-// To be able to decode aes encoded string, the keys parameter must be present. Otherwise, DecodeData
+// To be able to decode aes encoded string, the key parameter must be present. Otherwise, DecodeData
 // will return an error.
-func (m *Message) DecodeData(keys map[string]string) error {
+func (m *Message) DecodeData(key string) error {
 	encodings := strings.Split(m.Encoding, "/")
 	for i := len(encodings) - 1; i >= 0; i-- {
 		switch encodings[i] {
@@ -45,7 +45,7 @@ func (m *Message) DecodeData(keys map[string]string) error {
 		case "json", "utf-8":
 			continue
 		default:
-			if err := m.Decrypt(encodings[i], keys); err != nil {
+			if err := m.Decrypt(encodings[i], key); err != nil {
 				return err
 			}
 			continue
@@ -59,9 +59,9 @@ func (m *Message) DecodeData(keys map[string]string) error {
 // encoding data following the given `encoding` parameter.
 // `encoding` contains slash (/) separated values that EncodeData will read
 // from left to right to encode the current Data string.
-// To encode data using aes, the keys parameter must be present. Otherwise,
+// To encode data using aes, the key parameter must be present. Otherwise,
 // EncodeData will return an error.
-func (m *Message) EncodeData(encoding string, keys map[string]string) error {
+func (m *Message) EncodeData(encoding string, key string) error {
 	m.Encoding = ""
 	encodings := strings.Split(encoding, "/")
 	for i := 0; i < len(encodings); i++ {
@@ -74,7 +74,7 @@ func (m *Message) EncodeData(encoding string, keys map[string]string) error {
 			m.mergeEncoding(encodings[i])
 			continue
 		default:
-			if err := m.Encrypt(encodings[i], keys); err != nil {
+			if err := m.Encrypt(encodings[i], key); err != nil {
 				return err
 			}
 			continue
@@ -112,7 +112,7 @@ func (m *Message) getKeyLen(cipherStr string) int64 {
 	return keylen
 }
 
-func (m *Message) Decrypt(cipherStr string, keys map[string]string) error {
+func (m *Message) Decrypt(cipherStr string, key string) error {
 	keylen := m.getKeyLen(cipherStr)
 	if keylen == 0 {
 		return fmt.Errorf("unrecognized key length")
@@ -120,7 +120,7 @@ func (m *Message) Decrypt(cipherStr string, keys map[string]string) error {
 
 	switch keylen {
 	case 128, 192, 256:
-		block, err := aes.NewCipher([]byte(keys["key"]))
+		block, err := aes.NewCipher([]byte(key))
 		if err != nil {
 			return err
 		}
@@ -146,7 +146,7 @@ func (m *Message) Decrypt(cipherStr string, keys map[string]string) error {
 	return nil
 }
 
-func (m *Message) Encrypt(cipherStr string, keys map[string]string) error {
+func (m *Message) Encrypt(cipherStr string, key string) error {
 	keylen := m.getKeyLen(cipherStr)
 	if keylen == 0 {
 		return fmt.Errorf("unrecognized key length")
@@ -154,7 +154,7 @@ func (m *Message) Encrypt(cipherStr string, keys map[string]string) error {
 
 	switch keylen {
 	case 128, 192, 256:
-		block, err := aes.NewCipher([]byte(keys["key"]))
+		block, err := aes.NewCipher([]byte(key))
 		if err != nil {
 			return err
 		}
