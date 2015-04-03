@@ -199,7 +199,7 @@ var _ = Describe("Client", func() {
 			paginatedStats, err := client.Stats(&config.PaginateParams{
 				Limit: 1,
 				ScopeParams: config.ScopeParams{
-					Start: config.NewTimestamp(longAgo),
+					Start: longAgo,
 					Unit:  protocol.StatGranularityMinute,
 				},
 			})

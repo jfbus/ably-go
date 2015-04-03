@@ -2,11 +2,16 @@ package config_test
 
 import (
 	"net/url"
+	"time"
 
 	. "github.com/ably/ably-go/Godeps/_workspace/src/github.com/onsi/ginkgo"
 	. "github.com/ably/ably-go/Godeps/_workspace/src/github.com/onsi/gomega"
 	"github.com/ably/ably-go/config"
 )
+
+func tsToTime(ts int) time.Time {
+	return time.Unix(0, int64(ts)*int64(time.Millisecond)/int64(time.Nanosecond))
+}
 
 var _ = Describe("PaginationParams", func() {
 	var (
@@ -32,8 +37,8 @@ var _ = Describe("PaginationParams", func() {
 				Limit:     1,
 				Direction: "backwards",
 				ScopeParams: config.ScopeParams{
-					Start: 123,
-					End:   124,
+					Start: tsToTime(123),
+					End:   tsToTime(124),
 					Unit:  "hello",
 				},
 			}
@@ -58,7 +63,7 @@ var _ = Describe("PaginationParams", func() {
 
 		Context("with a value for ScopeParams", func() {
 			BeforeEach(func() {
-				params.Start = 123
+				params.Start = tsToTime(123)
 			})
 
 			It("creates a valid url", func() {

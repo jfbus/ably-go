@@ -63,8 +63,8 @@ var _ = Describe("Presence", func() {
 				It("can return older items from a certain date given a start / end timestamp", func() {
 					params := &config.PaginateParams{
 						ScopeParams: config.ScopeParams{
-							Start: config.NewTimestamp(time.Now().Add(-24 * time.Hour)),
-							End:   config.NewTimestamp(time.Now()),
+							Start: time.Now().AddDate(0, 0, -1),
+							End:   time.Now(),
 						},
 					}
 					members, err := presence.History(params)

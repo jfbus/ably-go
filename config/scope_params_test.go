@@ -2,6 +2,7 @@ package config_test
 
 import (
 	"net/url"
+	"time"
 
 	"github.com/ably/ably-go/config"
 
@@ -22,8 +23,8 @@ var _ = Describe("ScopeParams", func() {
 
 		Context("with an invalid range", func() {
 			BeforeEach(func() {
-				params.Start = 123
-				params.End = 122
+				params.Start = time.Now()
+				params.End = time.Now().Add(-1 * time.Hour)
 			})
 
 			It("returns an error", func() {
