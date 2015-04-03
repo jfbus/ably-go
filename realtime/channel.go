@@ -112,6 +112,7 @@ func (c *Channel) Attach() {
 	if c.State == ChanStateAttaching || c.State == ChanStateAttached {
 		return
 	}
+	// I would have moved the test to connection.send
 	if !c.client.isActive() {
 		c.Err = errors.New("Connection not active")
 		return

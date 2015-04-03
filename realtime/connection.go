@@ -57,6 +57,7 @@ func NewConn(params config.Params) *Conn {
 }
 
 func (c *Conn) isActive() bool {
+	// Are you sure a lock is necessary in this function ?
 	c.stateMtx.RLock()
 	defer c.stateMtx.RUnlock()
 
@@ -70,6 +71,7 @@ func (c *Conn) isActive() bool {
 }
 
 func (c *Conn) send(msg *protocol.ProtocolMessage) error {
+	// I would add a read lock on c.mtx and check the connection state
 	return websocket.JSON.Send(c.ws, msg)
 }
 
@@ -143,11 +145,8 @@ func (c *Conn) read() {
 }
 
 func (c *Conn) watchConnectionState() {
-	for {
-		select {
-		case connState := <-c.stateChan:
-			c.trigger(connState)
-		}
+	for connState := range c.stateChan {
+		c.trigger(connState)
 	}
 }
 
@@ -173,6 +172,9 @@ func (c *Conn) On(connState ConnState, listener ConnListener) {
 }
 
 func (c *Conn) setState(state ConnState) {
+	// We could change the semantics of watchConnectionState to manageConnectionState
+	// and move c.State = state to manageConnectionState
+	// this could lead to the removal of stateMtx.
 	c.stateMtx.Lock()
 	defer c.stateMtx.Unlock()
 
@@ -181,6 +183,9 @@ func (c *Conn) setState(state ConnState) {
 }
 
 func (c *Conn) setConnectionID(id string) {
+	// This could be merged with setState to remove one Lock
+	// or move to manageConnectionState and try to completely
+	// remove the mutex
 	c.stateMtx.Lock()
 	defer c.stateMtx.Unlock()
 
